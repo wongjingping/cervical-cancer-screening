@@ -1,0 +1,8 @@
+images/
+data/
+models/
+docs/
+
+.ipynb_checkpoints/
+.DS_Store
+
