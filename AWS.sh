@@ -6,16 +6,19 @@ ssh-add ~/Dropbox/Code/keys/aws_nvirgnia.pem
 
 ### ============================== first-time setup ============================== ###
 
-export AWS=54.164.74.213 # change as necessary
+export AWS=34.200.255.9 # change as necessary
 ssh ubuntu@$AWS
 # update/install software
-pip install seaborn
-sudo apt install 7z
+sudo -H /opt/anaconda3/bin/pip install seaborn
+sudo -H /opt/anaconda3/bin/pip install sklearn --upgrade
+sudo -H /opt/anaconda3/bin/pip install keras --upgrade
+sudo -H /opt/anaconda3/bin/pip install tensorflow --upgrade --ignore-installed
+sudo -H /opt/anaconda3/bin/pip install xgboost
+sudo -H apt install p7zip-full
 # setup repo
 git clone https://github.com/wongjingping/cervical-cancer-screening.git
-mkdir 
 cd cervical-cancer-screening
-mkdir models data images graph
+mkdir models images graph data data/submission
 exit
 
 # transfer processed file from local, and unzip
@@ -26,18 +29,23 @@ cd cervical-cancer-screening/data
 # download images from kaggle directly and extract from 7z archive
 scp ~/Dropbox/Code/keys/kaggle_cookies.txt ubuntu@$AWS:~/
 ssh ubuntu@$AWS
-wget --load-cookies kaggle_cookies.txt https://www.kaggle.com/c/intel-mobileodt-cervical-cancer-screening/download/train.7z -O images/train.7z
-wget --load-cookies kaggle_cookies.txt https://www.kaggle.com/c/intel-mobileodt-cervical-cancer-screening/download/test.7z -O images/test.7z
-7z x images/train.7z
-7z x images/test.7z
+wget --load-cookies ~/kaggle_cookies.txt https://www.kaggle.com/c/intel-mobileodt-cervical-cancer-screening/download/train.7z -O images/train.7z
+wget --load-cookies ~/kaggle_cookies.txt https://www.kaggle.com/c/intel-mobileodt-cervical-cancer-screening/download/test.7z -O images/test.7z
+wget --load-cookies ~/kaggle_cookies.txt https://www.kaggle.com/c/intel-mobileodt-cervical-cancer-screening/download/additional_Type_1_v2.7z -O images/additional_Type_1_v2.7z
+wget --load-cookies ~/kaggle_cookies.txt https://www.kaggle.com/c/intel-mobileodt-cervical-cancer-screening/download/additional_Type_2_v2.7z -O images/additional_Type_2_v2.7z
+wget --load-cookies ~/kaggle_cookies.txt https://www.kaggle.com/c/intel-mobileodt-cervical-cancer-screening/download/additional_Type_3_v2.7z -O images/additional_Type_3_v2.7z
+cd images
+7z x train.7z
+7z x test.7z
+7z x additional_Type_1_v2.7z
+7z x additional_Type_2_v2.7z
+7z x additional_Type_3_v2.7z
 
 
 ### ============================== running from AMI ============================== ###
 
 # when resuming
-export AWS=54.242.119.44 # change as necessary
-# export AWS=54.82.68.61 # fold 1
-# export AWS=52.90.211.155 # fold 2
+export AWS=34.200.255.9 # change as necessary
 ssh ubuntu@$AWS
 cd cervical-cancer-screening
 git checkout -- .
