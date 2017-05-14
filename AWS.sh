@@ -6,7 +6,7 @@ ssh-add ~/Dropbox/Code/keys/aws_nvirgnia.pem
 
 ### ============================== first-time setup ============================== ###
 
-export AWS=34.200.255.9 # change as necessary
+export AWS=34.203.212.137 # change as necessary
 ssh ubuntu@$AWS
 # update/install software
 sudo -H /opt/anaconda3/bin/pip install seaborn
@@ -15,6 +15,8 @@ sudo -H /opt/anaconda3/bin/pip install keras --upgrade
 sudo -H /opt/anaconda3/bin/pip install tensorflow --upgrade --ignore-installed
 sudo -H /opt/anaconda3/bin/pip install xgboost
 sudo -H apt install p7zip-full
+sudo apt install imagemagick
+sudo /opt/anaconda3/bin/conda install libgcc
 # setup repo
 git clone https://github.com/wongjingping/cervical-cancer-screening.git
 cd cervical-cancer-screening
@@ -41,11 +43,21 @@ cd images
 7z x additional_Type_2_v2.7z
 7z x additional_Type_3_v2.7z
 
+# use imagemagick to resize images to a max of 384x512. Can parallelize in screen
+screen
+time mogrify -resize '384x512' train/Type_1/*
+time mogrify -resize '384x512' train/Type_2/*
+time mogrify -resize '384x512' train/Type_3/*
+time mogrify -resize '384x512' test/*
+time mogrify -resize '384x512' Type_1/*
+time mogrify -resize '384x512' Type_2/*
+time mogrify -resize '384x512' Type_3/*
+
 
 ### ============================== running from AMI ============================== ###
 
 # when resuming
-export AWS=34.200.255.9 # change as necessary
+export AWS=34.203.212.137 # change as necessary
 ssh ubuntu@$AWS
 cd cervical-cancer-screening
 git checkout -- .
@@ -58,4 +70,5 @@ tensorboard --logdir graph --port 6006 # ctrl-a-c to open a new screen and start
 function awsdn() {
   scp ubuntu@$AWS:~/cervical-cancer-screening/models/"$@" models
 }
+
 
