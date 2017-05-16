@@ -52,12 +52,18 @@ time mogrify -resize '384x512' test/*
 time mogrify -resize '384x512' Type_1/*
 time mogrify -resize '384x512' Type_2/*
 time mogrify -resize '384x512' Type_3/*
+cd Type_1; for f in *.jpg; do mv "$f" "add_$f"; done; cd ..;
+cd Type_2; for f in *.jpg; do mv "$f" "add_$f"; done; cd ..;
+cd Type_3; for f in *.jpg; do mv "$f" "add_$f"; done; cd ..;
+mv Type_1/* train/Type_1/*
+mv Type_2/* train/Type_2/*
+mv Type_3/* train/Type_3/*
 
 
 ### ============================== running from AMI ============================== ###
 
 # when resuming
-export AWS=34.203.212.137 # change as necessary
+export AWS=54.210.49.158 # change as necessary
 ssh ubuntu@$AWS
 cd cervical-cancer-screening
 git checkout -- .
@@ -70,5 +76,4 @@ tensorboard --logdir graph --port 6006 # ctrl-a-c to open a new screen and start
 function awsdn() {
   scp ubuntu@$AWS:~/cervical-cancer-screening/models/"$@" models
 }
-
 
